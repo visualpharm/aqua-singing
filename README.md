@@ -1,6 +1,6 @@
 # aqua-singing
 
-Teach [Aqua Voice](https://withaqua.com) your vocabulary. Your Aqua Voice sings when it knows your words.
+Teach [Aqua Voice](https://withaqua.com) your vocabulary. Your Aqua Voice _sings_ when it knows your words.
 
 Bulk-edit dictionary, replacements, and custom instructions from the command line. Zero dependencies. Python 3 ships with macOS.
 
