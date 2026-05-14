@@ -1,14 +1,16 @@
 # aqua-config
 
-Bulk-edit your [Aqua Voice](https://withaqua.com) dictionary, replacements, and custom instructions from the command line — and keep them in sync with your actual work via AI prompts.
+Bulk-edit [Aqua Voice](https://withaqua.com) dictionary, replacements, and custom instructions from the command line.
+
+Zero dependencies. Python 3 ships with macOS.
 
 ---
 
 ## The problem
 
-Aqua syncs all settings to the cloud. Editing `settings.json` locally doesn't stick — the cloud copy wins on every restart. There's no import UI and no documented API.
+Aqua syncs settings to the cloud. Editing `settings.json` locally doesn't stick. Cloud wins on every restart. There's no import UI and no documented API.
 
-This script uses the same internal sync endpoint Aqua's own app uses. Changes go to the cloud and stay there.
+This script uses the same internal sync endpoint Aqua's own app uses. Changes go straight to the cloud.
 
 ---
 
@@ -19,9 +21,7 @@ curl -O https://raw.githubusercontent.com/visualpharm/aqua-config/main/aqua_conf
 python aqua_config.py status
 ```
 
-No dependencies. Python 3 ships with macOS.
-
-**Or, paste this into Claude Code / Cursor:**
+Or paste this into Claude Code or Cursor:
 
 ```
 Download https://raw.githubusercontent.com/visualpharm/aqua-config/main/aqua_config.py
@@ -59,21 +59,21 @@ python aqua_config.py push my_config.json --dry-run
 }
 ```
 
-Dictionary words are merged — nothing is removed. Replacements are merged by `from` key. `customInstructions` replaces the full field.
+Dictionary words are merged. Nothing is removed, duplicates are skipped. Replacements are merged by `from` key. `customInstructions` replaces the full field.
 
 ---
 
-## Keep it current with AI prompts
+## Keep it current with AI
 
-The real power: your AI coding assistant already knows your codebase, teammates, and dependencies. Use it to generate and refresh the config automatically.
+Your AI coding assistant already knows your codebase: package names, class names, git authors. Point it at aqua-config and it generates the dictionary for you. Run it again when you start a new project or bring someone new onto the team.
 
-**First-time setup — scan your project:**
+**First-time setup:**
 
 ```
 Scan this codebase. Generate aqua_settings.json for Aqua Voice with:
 - Proper nouns: component names, class names, non-generic filenames
-- All package names from package.json / requirements.txt / go.mod / etc.
-- Author names from `git log --format="%an" | sort -u`
+- Package names from package.json / requirements.txt / go.mod / etc.
+- Author names from: git log --format="%an" | sort -u
 - Domain abbreviations and acronyms from comments and variable names
 Then run: python aqua_config.py push aqua_settings.json
 ```
@@ -81,31 +81,33 @@ Then run: python aqua_config.py push aqua_settings.json
 **Weekly refresh:**
 
 ```
-Check what's new since last week: new files, dependencies, contributors.
+Check what changed since last week: new files, dependencies, contributors.
 Update aqua_settings.json and run: python aqua_config.py push aqua_settings.json
 ```
 
 **After a meeting or document:**
 
 ```
-Read [transcript / doc]. Extract proper nouns and technical terms Aqua might mis-transcribe.
+Read [transcript / doc]. Extract proper nouns and terms Aqua might mis-transcribe.
 Add to aqua_settings.json and push.
 ```
 
-**Domain vocabulary:**
+**New domain:**
 
 ```
-I work in [field]. Generate 50-100 domain terms a dictation app would likely mis-transcribe.
+I work in [field]. List 50-100 terms a dictation app would likely get wrong.
 Add to aqua_settings.json and push.
 ```
 
-Commit `aqua_settings.json` to your dotfiles and re-run `push` as your work evolves.
+Commit `aqua_settings.json` to your dotfiles. Re-run push as your work evolves.
 
 ---
 
 ## How it works
 
-The script reads your JWT from `~/Library/Application Support/Aqua Voice/settings.json` — no separate login. It POSTs to Aqua's internal sync endpoint:
+The script reads your JWT from `~/Library/Application Support/Aqua Voice/settings.json`. No separate login.
+
+Endpoint discovered by extracting `app.asar`:
 
 ```
 POST https://aqua-server.fly.dev/users/devices/update-settings/
@@ -113,18 +115,18 @@ Authorization: Bearer <token>
 { "scope": "global", "settings": { ... }, "appVersion": "0.14.3" }
 ```
 
-Discovered by extracting `app.asar`. Undocumented — may break on backend changes.
+Undocumented. May break on backend changes. Open an issue if it does.
 
-A timestamped backup of your local settings is created before every push.
+The script backs up your local settings file before every push.
 
 ---
 
 ## Contributing
 
-PRs welcome. Obvious gaps:
+PRs welcome. Good next things:
 - `add` subcommand for quick one-liners
 - Windows support
-- `watch` mode for auto-push on file change
+- `watch` mode: auto-push when the config file changes
 
 ---
 
