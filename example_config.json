@@ -1,0 +1,18 @@
+{
+  "dictionary": [
+    "YOUR_NAME",
+    "YourCompany",
+    "YourTown",
+    "CommonTerm"
+  ],
+
+  "replacements": [
+    { "from": "my email",    "to": "you@example.com" },
+    { "from": "my phone",    "to": "+1 555 123 4567" },
+    { "from": "my address",  "to": "123 Main St, City, Country" },
+    { "from": "my github",   "to": "https://github.com/yourhandle" },
+    { "from": "signature",   "to": "Your Name\nyou@example.com\n+1 555 123 4567" }
+  ],
+
+  "customInstructions": "Keep my direct style. Preserve technical terms, URLs, and product names exactly. For chat messages you may drop filler words (\"like\", \"okay so\"). Do not add greetings, intros, or emojis."
+}
