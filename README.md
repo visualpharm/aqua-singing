@@ -6,6 +6,10 @@ Bulk-edit dictionary, replacements, and custom instructions from the command lin
 
 ---
 
+## Why Aqua Voice
+
+I switched from Wispr Flow. Aqua is faster, cheaper, and less in your face about it. This script exists because I use it every day and wanted it to know my vocabulary.
+
 ## The problem
 
 Aqua syncs settings to the cloud. Editing `settings.json` locally doesn't stick. Cloud wins on every restart. There's no import UI and no documented API.
