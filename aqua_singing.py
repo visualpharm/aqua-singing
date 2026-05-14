@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-aqua-config — bulk-edit Aqua Voice settings via the app's own sync API.
+aqua-singing — bulk-edit Aqua Voice settings via the app's own sync API.
 
 Zero dependencies. Requires Python 3.8+ (ships with macOS).
 Token is read automatically from Aqua's local settings file.
 
 Usage:
-    python aqua_config.py status              # show current settings summary
-    python aqua_config.py pull                # print current cloud settings as JSON
-    python aqua_config.py push my_config.json # merge & push to Aqua cloud
-    python aqua_config.py push my_config.json --dry-run
+    python aqua_singing.py status                 # show current settings summary
+    python aqua_singing.py pull                   # print current cloud settings as JSON
+    python aqua_singing.py push my_settings.json  # merge & push to Aqua cloud
+    python aqua_singing.py push my_settings.json --dry-run
 """
 
 import json
@@ -75,29 +75,29 @@ def backup_settings():
     return bak
 
 
-def build_global_payload(current, config):
+def build_global_payload(current, settings_update):
     """
-    Merge config (user's additions) into current (local Aqua settings)
+    Merge settings_update (user's additions) into current (local Aqua settings)
     and return a ready-to-send global-scope payload.
     """
     # --- dictionary: merge, no duplicates ---
     existing = list(current.get("dictionary", []))
     existing_set = set(existing)
     added = []
-    for word in config.get("dictionary", []):
+    for word in settings_update.get("dictionary", []):
         if word not in existing_set:
             existing.append(word)
             existing_set.add(word)
             added.append(word)
 
-    # --- replacements: user config wins on key collision ---
+    # --- replacements: user settings win on key collision ---
     existing_reps = {r["from"]: r for r in current.get("replacements", [])}
-    for rep in config.get("replacements", []):
+    for rep in settings_update.get("replacements", []):
         existing_reps[rep["from"]] = rep
 
-    # --- other global fields: config overrides if present ---
+    # --- other global fields: settings file overrides if present ---
     def pick(key, default=None):
-        return config.get(key, current.get(key, default))
+        return settings_update.get(key, current.get(key, default))
 
     global_settings = {
         "dictionary":           existing,
@@ -159,17 +159,17 @@ def cmd_pull(args):
 
 
 def cmd_push(args):
-    config_path = Path(args.config)
-    if not config_path.exists():
-        sys.exit(f"Config file not found: {config_path}")
+    settings_path = Path(args.settings_file)
+    if not settings_path.exists():
+        sys.exit(f"Settings file not found: {settings_path}")
 
-    with config_path.open() as f:
-        config = json.load(f)
+    with settings_path.open() as f:
+        settings_update = json.load(f)
 
     current = load_local()
     token = get_token(current)
 
-    payload, added = build_global_payload(current, config)
+    payload, added = build_global_payload(current, settings_update)
     gs = payload["settings"]
 
     print(f"Dictionary:    {len(gs['dictionary'])} total ({len(added)} new words)")
@@ -202,10 +202,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python aqua_config.py status
-  python aqua_config.py pull > my_aqua_settings.json
-  python aqua_config.py push my_aqua_settings.json
-  python aqua_config.py push my_aqua_settings.json --dry-run
+  python aqua_singing.py status
+  python aqua_singing.py pull > my_aqua_singing_settings.json
+  python aqua_singing.py push my_aqua_singing_settings.json
+  python aqua_singing.py push my_aqua_singing_settings.json --dry-run
         """,
     )
     sub = parser.add_subparsers(dest="command", required=True)
@@ -213,8 +213,8 @@ Examples:
     sub.add_parser("status", help="Show current settings summary").set_defaults(func=cmd_status)
     sub.add_parser("pull",   help="Print current settings as JSON (redirect to save)").set_defaults(func=cmd_pull)
 
-    push_p = sub.add_parser("push", help="Merge a config file and push to Aqua cloud")
-    push_p.add_argument("config", help="Path to your JSON config file")
+    push_p = sub.add_parser("push", help="Merge a settings file and push to Aqua cloud")
+    push_p.add_argument("settings_file", help="Path to your JSON settings file")
     push_p.add_argument("--dry-run", action="store_true", help="Show what would be sent, don't send")
     push_p.set_defaults(func=cmd_push)
 

@@ -4,6 +4,8 @@ Teach [Aqua Voice](https://withaqua.com) your vocabulary. Your Aqua Voice _sings
 
 Bulk-edit dictionary, replacements, and custom instructions from the command line. Zero dependencies. Python 3 ships with macOS.
 
+Use it when Aqua keeps mishearing your project names, people, acronyms, addresses, and canned phrases.
+
 ---
 
 ## Why Aqua Voice
@@ -21,15 +23,15 @@ This script uses the same internal sync endpoint Aqua's own app uses. Changes go
 ## Install
 
 ```bash
-curl -O https://raw.githubusercontent.com/visualpharm/aqua-config/main/aqua_config.py
-python aqua_config.py status
+curl -O https://raw.githubusercontent.com/visualpharm/aqua-singing/main/aqua_singing.py
+python aqua_singing.py status
 ```
 
 Or paste this into Claude Code or Cursor:
 
 ```
-Download https://raw.githubusercontent.com/visualpharm/aqua-config/main/aqua_config.py
-to my home directory, then run: python ~/aqua_config.py status
+Download https://raw.githubusercontent.com/visualpharm/aqua-singing/main/aqua_singing.py
+to my home directory, then run: python ~/aqua_singing.py status
 ```
 
 ---
@@ -37,15 +39,15 @@ to my home directory, then run: python ~/aqua_config.py status
 ## Usage
 
 ```bash
-python aqua_config.py status              # current settings summary
-python aqua_config.py pull                # dump settings as JSON
-python aqua_config.py push my_config.json
-python aqua_config.py push my_config.json --dry-run
+python aqua_singing.py status              # current settings summary
+python aqua_singing.py pull                # dump settings as JSON
+python aqua_singing.py push my_settings.json
+python aqua_singing.py push my_settings.json --dry-run
 ```
 
 ---
 
-## Config format
+## Settings format
 
 ```json
 {
@@ -69,41 +71,41 @@ Dictionary words are merged. Nothing is removed, duplicates are skipped. Replace
 
 ## Keep it current with AI
 
-Your AI coding assistant already knows your codebase: package names, class names, git authors. Point it at aqua-config and it generates the dictionary for you. Run it again when you start a new project or bring someone new onto the team.
+Your AI coding assistant already knows your codebase: package names, class names, git authors. Point it at aqua-singing and it generates the dictionary for you. Run it again when you start a new project or bring someone new onto the team.
 
 **First-time setup:**
 
 ```
-Scan this codebase. Generate aqua_settings.json for Aqua Voice with:
+Scan this codebase. Generate aqua_singing_settings.json for Aqua Voice with:
 - Proper nouns: component names, class names, non-generic filenames
 - Package names from package.json / requirements.txt / go.mod / etc.
 - Author names from: git log --format="%an" | sort -u
 - Domain abbreviations and acronyms from comments and variable names
-Then run: python aqua_config.py push aqua_settings.json
+Then run: python aqua_singing.py push aqua_singing_settings.json
 ```
 
 **Weekly refresh:**
 
 ```
 Check what changed since last week: new files, dependencies, contributors.
-Update aqua_settings.json and run: python aqua_config.py push aqua_settings.json
+Update aqua_singing_settings.json and run: python aqua_singing.py push aqua_singing_settings.json
 ```
 
 **After a meeting or document:**
 
 ```
 Read [transcript / doc]. Extract proper nouns and terms Aqua might mis-transcribe.
-Add to aqua_settings.json and push.
+Add to aqua_singing_settings.json and push.
 ```
 
 **New domain:**
 
 ```
 I work in [field]. List 50-100 terms a dictation app would likely get wrong.
-Add to aqua_settings.json and push.
+Add to aqua_singing_settings.json and push.
 ```
 
-Commit `aqua_settings.json` to your dotfiles. Re-run push as your work evolves.
+Commit `aqua_singing_settings.json` to your dotfiles. Re-run push as your work evolves.
 
 ---
 
@@ -130,7 +132,7 @@ The script backs up your local settings file before every push.
 PRs welcome. Good next things:
 - `add` subcommand for quick one-liners
 - Windows support
-- `watch` mode: auto-push when the config file changes
+- `watch` mode: auto-push when the settings file changes
 
 ---
 
