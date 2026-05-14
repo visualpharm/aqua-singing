@@ -1,8 +1,8 @@
-# aqua-config
+# aqua-singing
 
-Bulk-edit [Aqua Voice](https://withaqua.com) dictionary, replacements, and custom instructions from the command line.
+Teach [Aqua Voice](https://withaqua.com) your vocabulary. Your Aqua Voice sings when it knows your words.
 
-Zero dependencies. Python 3 ships with macOS.
+Bulk-edit dictionary, replacements, and custom instructions from the command line. Zero dependencies. Python 3 ships with macOS.
 
 ---
 
