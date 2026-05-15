@@ -186,8 +186,13 @@ def cmd_push(args):
 
     result = api_post("/users/devices/update-settings/", payload, token)
     if result.get("success"):
+        # Also write merged settings to local file so Aqua doesn't overwrite
+        # the cloud update with stale local state on next startup.
+        merged_local = {**current, **{k: v for k, v in gs.items()}}
+        with SETTINGS_PATH.open("w") as f:
+            json.dump(merged_local, f, indent=2, ensure_ascii=False)
         print(f"\nDone. {result.get('message', 'Settings updated.')}")
-        print("Restart Aqua Voice (or wait ~30 s) to load the new settings.")
+        print("Cloud and local file updated. Restart Aqua Voice to apply.")
     else:
         print(f"Unexpected response: {result}")
 
